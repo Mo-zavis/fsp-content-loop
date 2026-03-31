@@ -9,15 +9,15 @@ interface ThemeStore {
 }
 
 export const useThemeStore = create<ThemeStore>((set) => ({
-  theme: (localStorage.getItem('se-theme') as Theme) || 'light',
+  theme: (localStorage.getItem('se-theme-v2') as Theme) || 'light',
   toggleTheme: () =>
     set((s) => {
       const next = s.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('se-theme', next);
+      localStorage.setItem('se-theme-v2', next);
       return { theme: next };
     }),
   setTheme: (t) => {
-    localStorage.setItem('se-theme', t);
+    localStorage.setItem('se-theme-v2', t);
     set({ theme: t });
   },
 }));

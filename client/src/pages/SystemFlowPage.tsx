@@ -230,7 +230,7 @@ function FlowCanvas() {
                   { label: 'Backend', value: 'Express + SQLite' },
                   { label: 'Video', value: 'Remotion 4.x + FFmpeg' },
                   { label: 'AI', value: 'Claude Opus 4.6' },
-                  { label: 'Images', value: 'Freepik Mystic' },
+                  { label: 'Images', value: 'Nano Banana (Gemini)' },
                   { label: 'Video Gen', value: 'Google Veo 2 / Veo 3' },
                   { label: 'TTS', value: 'ElevenLabs v2' },
                   { label: 'Music', value: 'ElevenLabs SFX' },

@@ -230,10 +230,10 @@ function FlowCanvas() {
                   { label: 'Backend', value: 'Express + SQLite' },
                   { label: 'Video', value: 'Remotion 4.x + FFmpeg' },
                   { label: 'AI', value: 'Claude Opus 4.6' },
-                  { label: 'Images', value: 'Freepik Mystic / DALL-E 3' },
-                  { label: 'Video Gen', value: 'Freepik Kling O1' },
+                  { label: 'Images', value: 'Freepik Mystic' },
+                  { label: 'Video Gen', value: 'Google Veo 2 / Veo 3' },
                   { label: 'TTS', value: 'ElevenLabs v2' },
-                  { label: 'Music', value: 'Freepik Gen' },
+                  { label: 'Music', value: 'ElevenLabs SFX' },
                 ].map((row) => (
                   <div key={row.label} className="flex justify-between gap-2">
                     <span className="text-[8px] text-neutral-500">{row.label}</span>

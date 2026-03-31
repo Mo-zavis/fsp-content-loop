@@ -28,6 +28,18 @@ export function ProjectsPage() {
   // Clean up duplicates on mount
   useEffect(() => { deduplicateProjects(); }, [deduplicateProjects]);
 
+  // Auto-seed default projects on first visit
+  useEffect(() => {
+    const hasEp1 = projects.some(p => p.name === 'The Underdog — Episode 1');
+    const hasSeries = projects.some(p => p.name === 'The Underdog — 5 Episodes');
+    if (!hasEp1) {
+      createProject('The Underdog — Episode 1', 'Episode 1: The Spark — Kofi discovers squash, starts the 100-day challenge, finds FSP.');
+    }
+    if (!hasSeries) {
+      createProject('The Underdog — 5 Episodes', 'FSP Content Series: Kofi Mensah, 19, Brixton. 100-day squash challenge.');
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Sort: most recently updated first
   const sorted = [...projects].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
@@ -51,8 +63,9 @@ export function ProjectsPage() {
     const saved = loadWorkflowData(p.id);
     if (saved && saved.nodes && saved.nodes.length > 0) {
       loadTemplate(saved.nodes as any, saved.edges as any, p.name);
+    } else if (p.name === 'The Underdog — Episode 1') {
+      loadTemplate(FSP_UNDERDOG_EP1_TEMPLATE.nodes, FSP_UNDERDOG_EP1_TEMPLATE.edges, FSP_UNDERDOG_EP1_TEMPLATE.name);
     } else if (p.name === 'The Underdog — 5 Episodes') {
-      // Fallback: first open of Underdog, load template and save it
       loadTemplate(FSP_UNDERDOG_TEMPLATE.nodes, FSP_UNDERDOG_TEMPLATE.edges, FSP_UNDERDOG_TEMPLATE.name);
     }
     navigate(`/project/${p.id}`);

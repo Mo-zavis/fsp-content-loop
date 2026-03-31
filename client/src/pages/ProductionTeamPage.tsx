@@ -131,30 +131,61 @@ export function ProductionTeamPage() {
   const [skillContent, setSkillContent] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
+  // Cache for skill data loaded from static JSON
+  const [skillDataMap, setSkillDataMap] = useState<Record<string, { content: string } & SkillManifest>>({});
+
   useEffect(() => {
+    // Try API first (local dev), fall back to static JSON (Vercel)
     fetch('/api/skills')
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(data => {
         const loaded = data.skills || [];
         setSkills(loaded);
         setStageMap(data.stageMap || {});
-        // Auto-select first skill
         if (loaded.length > 0 && !selectedSkillId) {
           handleSelectSkill(loaded[0].id);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        // Fallback: load from static skills.json
+        fetch('/skills.json')
+          .then(r => r.json())
+          .then((data: Record<string, any>) => {
+            const loaded: SkillManifest[] = Object.entries(data).map(([id, s]: [string, any]) => ({
+              id, name: s.name, icon: s.icon, description: s.description,
+              tier: s.tier, stages: s.stages, wordCount: s.wordCount,
+            }));
+            setSkills(loaded);
+            setSkillDataMap(data);
+            if (loaded.length > 0 && !selectedSkillId) {
+              setSelectedSkillId(loaded[0].id);
+              setSkillContent(data[loaded[0].id]?.content || '');
+            }
+          })
+          .catch(() => {});
+      });
   }, []);
 
   const handleSelectSkill = async (id: string) => {
     setSelectedSkillId(id);
     setLoading(true);
+    // Use cached static data if available
+    if (skillDataMap[id]) {
+      setSkillContent(skillDataMap[id].content || '');
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch(`/api/skills/${id}`);
       const data = await res.json();
       setSkillContent(data.content || '');
     } catch {
-      setSkillContent('Failed to load skill content.');
+      // Fallback to static data
+      if (skillDataMap[id]) {
+        setSkillContent(skillDataMap[id].content || '');
+      } else {
+        setSkillContent('Failed to load skill content.');
+      }
     }
     setLoading(false);
   };
